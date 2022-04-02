@@ -1,11 +1,19 @@
 
+class deal():
+    vendor = ""
+    price = 0
+    amount = 0
+    discount = 0
+    def __init__(self,vendor,price,amount,discount):
+        self.vendor = vendor
+        self.price = price
+        self.amount = amount
+        self.discount = discount
+
+
 class DP():
     name = ""
-    discount = 0
-    og_price = 0
-    curr_price = 0
-    def __init__(self,name,discount,original_price,price_now):
+    deals = []
+    def __init__(self,name,deals):
         self.name = name
-        self.discount = discount
-        self.og_price = original_price
-        self.curr_price = price_now    
+        self.deals = deals[:]

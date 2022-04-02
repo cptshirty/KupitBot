@@ -1,2 +1,2 @@
-# DiscountBot
-Bot for scraping discount offers for food
+# KupiBot
+Bot for scraping discount offers on Kupi.cz 
