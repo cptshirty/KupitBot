@@ -2,14 +2,17 @@
 class deal():
     vendor = ""
     price = 0
-    amount = 0
     discount = 0
-    def __init__(self,vendor,price,amount,discount):
+    def __init__(self,vendor,price,discount):
         self.vendor = vendor
         self.price = price
-        self.amount = amount
         self.discount = discount
 
+    def deal_detail(self):
+        details = '| ' + self.vendor +' | '+str(self.price) + ' | ' + str(self.discount) + ' % |'
+        print(len(details)*'-')
+        print(details)
+        print(len(details)*'-')
 
 class DP():
     name = ""
@@ -17,3 +20,14 @@ class DP():
     def __init__(self,name,deals):
         self.name = name
         self.deals = deals[:]
+
+    def show_deals(self,shops):
+        deals = []
+        for deal in self.deals:
+            for shop in shops:
+                if shop in deal.vendor:
+                    deals.append(deal)
+        if len(deals) > 0:
+            print(self.name)
+            for deal in deals:
+                deal.deal_detail()

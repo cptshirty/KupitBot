@@ -3,7 +3,7 @@
 import requests as req
 import discounted_product as dp
 from bs4 import BeautifulSoup as soup
-
+import regex
 def find_longest(generator):
     strings = []
     for i in generator:
@@ -15,7 +15,7 @@ def find_longest(generator):
     return strings[0]
 
 
-def soupsearch(textsoup):
+def soupsearch(textsoup,products):
     ENTRY_CATCHPHRASE = 'group_discounts active'
     NAME_CATCHPHRASE = 'product_link_history'
     TABLE_CATCHPHRASE = 'wide discounts_table' 
@@ -25,24 +25,30 @@ def soupsearch(textsoup):
     divs = textsoup.find_all('div',{'class':ENTRY_CATCHPHRASE})
     for div in divs:
         stripped_names = div.find('a',{'class':NAME_CATCHPHRASE}).stripped_strings
-        product_name = find_longest(stripped_names)
+        product_name = find_longest(stripped_names).lower()
         table = div.find('table',{'class':TABLE_CATCHPHRASE})
         table_entries = table.find_all('tr')
-        print(product_name)
+        prod = dp.DP(product_name,[])
         for entry in table_entries:
             shop = ''
-            price = ''
-            discount = ''
+            price = '0'
+            discount = '0'
             table_shops = entry.find('span',{'class':VENDOR_CATCHPHRASE})
             table_prices = entry.find('strong')
             table_discounts = entry.find('div',{'class':DISCOUNT_CATCHPHRASE})
             if table_shops != None:
-                shop = find_longest(table_shops.stripped_strings)
+                shop = find_longest(table_shops.stripped_strings).lower()
             if table_prices != None:
-                price = find_longest(table_prices.stripped_strings)
+                price = find_longest(table_prices.stripped_strings).replace(',','.')
+                price = regex.findall("[\d.]+",price)[0]
             if table_discounts != None:
-                discount = find_longest(table_discounts.stripped_strings)
-            print(shop + ' : ' + price + ' : ' + discount)
+                discount = find_longest(table_discounts.stripped_strings).replace(',','.')
+                discount = regex.findall("[\d.]+",discount)[0]
+            
+            deal = dp.deal(shop,float(price),float(discount))
+            prod.deals.append(deal) 
+        products.append(prod)
+    return products
 
 def check_for_more_button(thesoup:soup):
     button = thesoup.find_all('a',{'class':'btn btn_colored big load_discounts'})
@@ -57,25 +63,24 @@ def scrape_page(url:str):
     Website = req.get(url)
     text = Website.text
     if(Website.status_code != 200):
-        raise ValueError("Website could not have been scraped, HTML status code " + str(Website.status_code))
+        raise ValueError("Website " + url + " could not have been scraped, HTML status code " + str(Website.status_code))
     return text
 
-def main():
-    url = "https://www.kupi.cz/slevy/hovezi-maso"
+def scrape_subpages(top_url,first_subadress):
+    products = []
+    url = top_url + first_subadress
     text = scrape_page(url)
     textsoup = soup(text,features="lxml")
-    print('while emerging')
     while True:
         subpage = check_for_more_button(textsoup)
         if subpage == None:
             break
-        else:
-            print(subpage)
-        url = 'https://www.kupi.cz' + subpage
+        soupsearch(textsoup,products)
+        url = top_url + subpage
         textsoup = soup(scrape_page(url),features="lxml")
-
-
+    return products
 
 
 if __name__ == "__main__":
-    main()
+    url = "https://www.kupi.cz"
+    scrape_subpages(url,"/slevy/ovoce-a-zelenina")

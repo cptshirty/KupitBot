@@ -1,0 +1,5 @@
+tesco
+billa
+lidl
+penny
+kaufland
