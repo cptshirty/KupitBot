@@ -1,5 +1,5 @@
 #coding=windows-1250
-
+from typing import List
 import requests as req
 import discounted_product as dp
 from bs4 import BeautifulSoup as soup
@@ -15,7 +15,7 @@ def find_longest(generator):
     return strings[0]
 
 
-def soupsearch(textsoup,products):
+def soupsearch(textsoup:soup,category,products):
     ENTRY_CATCHPHRASE = 'group_discounts active'
     NAME_CATCHPHRASE = 'product_link_history'
     TABLE_CATCHPHRASE = 'wide discounts_table' 
@@ -33,19 +33,21 @@ def soupsearch(textsoup,products):
             shop = ''
             price = '0'
             discount = '0'
-            table_shops = entry.find('span',{'class':VENDOR_CATCHPHRASE})
+            table_shops = entry.find('span')
             table_prices = entry.find('strong')
             table_discounts = entry.find('div',{'class':DISCOUNT_CATCHPHRASE})
             if table_shops != None:
                 shop = find_longest(table_shops.stripped_strings).lower()
+                split = regex.split("\\\\n + ",shop)
+                if len(split) > 1:
+                    shop = split[0] + ' ' + split[1]
             if table_prices != None:
                 price = find_longest(table_prices.stripped_strings).replace(',','.')
-                price = regex.findall("[\d.]+",price)[0]
+                price = regex.findall("[\\d.]+",price)[0]
             if table_discounts != None:
                 discount = find_longest(table_discounts.stripped_strings).replace(',','.')
-                discount = regex.findall("[\d.]+",discount)[0]
-            
-            deal = dp.deal(shop,float(price),float(discount))
+                discount = regex.findall("[\\d.]+",discount)[0]
+            deal = dp.deal(shop,float(price),float(discount),category)
             prod.deals.append(deal) 
         products.append(prod)
     return products
@@ -66,16 +68,16 @@ def scrape_page(url:str):
         raise ValueError("Website " + url + " could not have been scraped, HTML status code " + str(Website.status_code))
     return text
 
-def scrape_subpages(top_url,first_subadress):
+def scrape_subpages(top_url,second_url,first_subadress):
     products = []
-    url = top_url + first_subadress
+    url = top_url + second_url + first_subadress
     text = scrape_page(url)
     textsoup = soup(text,features="lxml")
     while True:
         subpage = check_for_more_button(textsoup)
         if subpage == None:
             break
-        soupsearch(textsoup,products)
+        soupsearch(textsoup,first_subadress,products)
         url = top_url + subpage
         textsoup = soup(scrape_page(url),features="lxml")
     return products
@@ -83,4 +85,4 @@ def scrape_subpages(top_url,first_subadress):
 
 if __name__ == "__main__":
     url = "https://www.kupi.cz"
-    scrape_subpages(url,"/slevy/ovoce-a-zelenina")
+    scrape_subpages(url,"/slevy/","ovoce-a-zelenina")
