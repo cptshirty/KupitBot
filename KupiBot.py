@@ -47,9 +47,9 @@ if __name__ == "__main__":
     logging.disable(logging.CRITICAL)
     API_KEY = sys.argv[1]
     url = "https://www.kupi.cz"
-    shops_fd = open(PATH + 'shops_of_interest.txt',encoding='windows-1250')
-    subpages_fd = open(PATH +'subpages.txt',encoding='windows-1250')
-    keywords_fd = open(PATH + 'keywords.txt',encoding='windows-1250')
+    shops_fd = open(PATH + '/shops_of_interest.txt',encoding='windows-1250')
+    subpages_fd = open(PATH +'/subpages.txt',encoding='windows-1250')
+    keywords_fd = open(PATH + '/keywords.txt',encoding='windows-1250')
     subpages = subpages_fd.readlines()
     products = []
     colors = []
