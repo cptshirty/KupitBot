@@ -3,8 +3,13 @@ from typing import List
 import requests as req
 import discounted_product as dp
 from bs4 import BeautifulSoup as soup
+import bs4
 import regex
+
 def find_longest(generator):
+    """
+    function for findung the longest substring
+    """
     strings = []
     for i in generator:
         string = repr(i)
@@ -53,6 +58,9 @@ def soupsearch(textsoup:soup,category,products):
     return products
 
 def check_for_more_button(thesoup:soup):
+    """
+    function that searches for show more button
+    """
     button = thesoup.find_all('a',{'class':'btn btn_colored big load_discounts'})
     next_page = None
     for but in button:

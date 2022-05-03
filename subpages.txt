@@ -1,9 +1,9 @@
-pecivo
-sladkosti-a-slane-snacky
-mrazene-a-instantni-potraviny
-nealko-napoje
-lahudky
-maso-drubez-a-ryby
-konzervy
-alkohol
-ovoce-a-zelenina
+pecivo cdab8f
+sladkosti-a-slane-snacky dc8add
+mrazene-a-instantni-potraviny 99c1f1
+nealko-napoje 1a5fb4
+lahudky 000000
+maso-drubez-a-ryby ff0000
+konzervy c0bfbc
+alkohol f9f06b
+ovoce-a-zelenina 26a269
