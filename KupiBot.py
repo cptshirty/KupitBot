@@ -43,6 +43,7 @@ def hook_products(API_KEY,products,subpages,keywords,shops,colors):
 
 if __name__ == "__main__":
     PATH = os.path.realpath(__file__)
+    PATH = os.path.dirname(PATH)
     logging.disable(logging.CRITICAL)
     API_KEY = sys.argv[1]
     url = "https://www.kupi.cz"
