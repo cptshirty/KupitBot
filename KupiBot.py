@@ -3,6 +3,7 @@ import discord_webhook as dw
 import discounted_product as dp
 from page_scraper import scrape_subpages
 import sys
+import logging
 
 def print_products(products,subpages,keywords,shops):
     for index,cathegory in enumerate(products):
@@ -13,7 +14,7 @@ def print_products(products,subpages,keywords,shops):
                     product.show_deals(shops)
 
 def hook_products(API_KEY,products,subpages,keywords,shops,colors):
-    webhook = dw.DiscordWebhook(API_KEY,"","KupiBot","https://i.imgur.com/oBPXx0D.png",rate_limit_retry=True)
+    webhook = dw.DiscordWebhook(API_KEY,"","KupiBot","https://i.imgur.com/oBPXx0D.png",rate_limit_retry=True,)
     for index,cathegory in enumerate(products):
         webhook.set_content( '**' + subpages[index] + '**')
         embeds = []
@@ -40,6 +41,7 @@ def hook_products(API_KEY,products,subpages,keywords,shops,colors):
 
 
 if __name__ == "__main__":
+    logging.disable(logging.CRITICAL)
     API_KEY = sys.argv[1]
     url = "https://www.kupi.cz"
     shops_fd = open('shops_of_interest.txt',encoding='windows-1250')
@@ -59,8 +61,8 @@ if __name__ == "__main__":
     subpages_fd.close()
     keywords_fd.close()
     for index,subpage in enumerate(subpages):
-       print("scraping subpage: " + subpage)
+    #   print("scraping subpage: " + subpage)
        products.append(scrape_subpages(url,"/slevy/", subpage))
 
-    print_products(products,subpages,keywords,shops)
+    #print_products(products,subpages,keywords,shops)
     hook_products(API_KEY,products,subpages,keywords,shops,colors)
