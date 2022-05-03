@@ -4,6 +4,7 @@ import discounted_product as dp
 from page_scraper import scrape_subpages
 import sys
 import logging
+import os
 
 def print_products(products,subpages,keywords,shops):
     for index,cathegory in enumerate(products):
@@ -41,12 +42,13 @@ def hook_products(API_KEY,products,subpages,keywords,shops,colors):
 
 
 if __name__ == "__main__":
+    PATH = os.path.realpath(__file__)
     logging.disable(logging.CRITICAL)
     API_KEY = sys.argv[1]
     url = "https://www.kupi.cz"
-    shops_fd = open('shops_of_interest.txt',encoding='windows-1250')
-    subpages_fd = open('subpages.txt',encoding='windows-1250')
-    keywords_fd = open('keywords.txt',encoding='windows-1250')
+    shops_fd = open(PATH + 'shops_of_interest.txt',encoding='windows-1250')
+    subpages_fd = open(PATH +'subpages.txt',encoding='windows-1250')
+    keywords_fd = open(PATH + 'keywords.txt',encoding='windows-1250')
     subpages = subpages_fd.readlines()
     products = []
     colors = []
